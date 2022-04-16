@@ -16,6 +16,9 @@ int main()
     character.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
 
     float speedCharacter = 0.2;
+    float spriteSize = 32;
+    float currentFrame = 0;
+    float maxFrame = 2;
     sf::Clock clock;
     while (window.isOpen())
     {
@@ -29,29 +32,46 @@ int main()
 
         window.clear();
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
             float dx = -speedCharacter * time;
             character.move(dx, 0);
-            character.setTextureRect(sf::IntRect(0, 32, 32, 32));
+            float positionFrame = currentFrame * spriteSize;
+            if (maxFrame <= currentFrame) {
+                currentFrame = 0;
+            }
+            currentFrame++;
+            character.setTextureRect(sf::IntRect(positionFrame, spriteSize, spriteSize, spriteSize));
+        
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
             float dx = speedCharacter * time;
             character.move(dx, 0);
-            character.setTextureRect(sf::IntRect(0, 64, 32, 32));
+            float positionFrame = currentFrame * spriteSize;
+            if (maxFrame <= currentFrame) {
+                currentFrame = 0;
+            }
+            currentFrame++;
+            character.setTextureRect(sf::IntRect(positionFrame, spriteSize*2, spriteSize, spriteSize));
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
             float dy = -speedCharacter * time;
             character.move(0, dy);
-            character.setTextureRect(sf::IntRect(0, 96, 32, 32));
+            float positionFrame = currentFrame * spriteSize;
+            if (maxFrame <= currentFrame) {
+                currentFrame = 0;
+            }
+            currentFrame++;
+            character.setTextureRect(sf::IntRect(positionFrame, spriteSize*3, spriteSize, spriteSize));
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
             float dy = speedCharacter * time;
             character.move(0, dy);
-            character.setTextureRect(sf::IntRect(0, 0, 32, 32));
+            float positionFrame = currentFrame * spriteSize;
+            if (maxFrame <= currentFrame) {
+                currentFrame = 0;
+            }
+            currentFrame++;
+            character.setTextureRect(sf::IntRect(positionFrame, 0, spriteSize, spriteSize));
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         {
