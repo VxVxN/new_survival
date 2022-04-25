@@ -12,6 +12,7 @@ enum Direction
 class Character
 {
 public:
+    Character() = default;
     Character(std::string filename);
 
     sf::Sprite getSprite();
@@ -24,7 +25,7 @@ private:
 
     sf::Sprite _sprite;
     sf::Texture _texture;
-    float _speedCharacter = 40;
+    float _speedCharacter = 1;
     float _currentFrame = 0;
 
     float _updatePositionFrame();
@@ -48,32 +49,32 @@ void Character::setPosition(float x, float y)
     _sprite.setPosition(sf::Vector2f(x, y));
 }
 
-void Character::move(Direction direction, float time)
+void Character::move(Direction direction, float speed)
 {
     float dy, dx;
     float positionFrame;
     switch (direction)
     {
     case Up:
-        dy = -_speedCharacter * time;
+        dy = -_speedCharacter * speed;
         _sprite.move(0, dy);
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize * 3, _spriteSize, _spriteSize));
         break;
     case Down:
-        dy = _speedCharacter * time;
+        dy = _speedCharacter * speed;
         _sprite.move(0, dy);
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, 0, _spriteSize, _spriteSize));
         break;
     case Left:
-        dx = -_speedCharacter * time;
+        dx = -_speedCharacter * speed;
         _sprite.move(dx, 0);
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize, _spriteSize, _spriteSize));
         break;
     case Right:
-        dx = _speedCharacter * time;
+        dx = _speedCharacter * speed;
         _sprite.move(dx, 0);
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize * 2, _spriteSize, _spriteSize));
