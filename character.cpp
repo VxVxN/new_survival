@@ -18,14 +18,16 @@ public:
     sf::Sprite getSprite();
     void setPosition(float x, float y);
     void move(Direction direction, float time);
+    float x();
+    float y();
 
 private:
+    float _x, _y;
     const float _maxFrame = 2;
     const float _spriteSize = 32;
 
     sf::Sprite _sprite;
     sf::Texture _texture;
-    float _speedCharacter = 1;
     float _currentFrame = 0;
 
     float _updatePositionFrame();
@@ -33,7 +35,10 @@ private:
 
 Character::Character(std::string filename)
 {
-    _texture.loadFromFile(filename);
+    if (!_texture.loadFromFile(filename))
+    {
+        throw "Failed to load character from file";
+    }
 
     _sprite.setTexture(_texture);
     _sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
@@ -46,6 +51,8 @@ sf::Sprite Character::getSprite()
 
 void Character::setPosition(float x, float y)
 {
+    _x = x;
+    _y = y;
     _sprite.setPosition(sf::Vector2f(x, y));
 }
 
@@ -56,32 +63,33 @@ void Character::move(Direction direction, float speed)
     switch (direction)
     {
     case Up:
-        dy = -_speedCharacter * speed;
-        _sprite.move(0, dy);
+        dy = -speed;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize * 3, _spriteSize, _spriteSize));
         break;
     case Down:
-        dy = _speedCharacter * speed;
-        _sprite.move(0, dy);
+        dy = speed;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, 0, _spriteSize, _spriteSize));
         break;
     case Left:
-        dx = -_speedCharacter * speed;
+        dx = -speed;
         _sprite.move(dx, 0);
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize, _spriteSize, _spriteSize));
         break;
     case Right:
-        dx = _speedCharacter * speed;
-        _sprite.move(dx, 0);
+        dx = speed;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize * 2, _spriteSize, _spriteSize));
         break;
     default:
         break;
     }
+
+    _x += dx;
+    _y += dy;
+    _sprite.setPosition(_x, _y);
 }
 
 float Character::_updatePositionFrame()
@@ -93,4 +101,14 @@ float Character::_updatePositionFrame()
     }
     _currentFrame++;
     return positionFrame;
+}
+
+float Character::x()
+{
+    return _x;
+}
+
+float Character::y()
+{
+    return _y;
 }

@@ -19,6 +19,7 @@ public:
     sf::RenderWindow &getRenderWindow();
 
     void toggleFullscreen();
+    void setView(sf::View);
 
     void draw(sf::Drawable &drawable);
 
@@ -129,4 +130,9 @@ void Window::draw(sf::Drawable &drawable)
 sf::RenderWindow &Window::getRenderWindow()
 {
     return _window;
+}
+
+void Window::setView(sf::View view)
+{
+    _window.setView(view);
 }
