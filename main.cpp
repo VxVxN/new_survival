@@ -5,7 +5,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
+    sf::RenderWindow window(sf::VideoMode(1600, 800), "SFML window");
 
     Character character("images/characters.png");
     character.setPosition(window.getSize().x / 2, window.getSize().y / 2);
@@ -13,7 +13,7 @@ int main()
     sf::Clock clock;
     while (window.isOpen())
     {
-        float time = static_cast<float>(clock.restart().asMilliseconds());
+        float time = static_cast<float>(clock.restart().asSeconds());
         sf::Event event;
         while (window.pollEvent(event))
         {
