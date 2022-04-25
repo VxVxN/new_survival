@@ -1,5 +1,6 @@
 #include "window.cpp"
 #include "character.cpp"
+#include "map.cpp"
 
 class Game
 {
@@ -18,13 +19,16 @@ private:
     void _moveCharacter();
     Window _window;
     Character _character;
+    Map _map;
 
     sf::Clock _clock;
     sf::Time _elapsed;
     float _pixelsPerSecond;
 };
 
-Game::Game() : _window("Survival", sf::Vector2u(1600, 1000)), _character("images/characters.png")
+Game::Game() : _window("Survival", sf::Vector2u(1600, 1000)),
+               _character("images/characters.png"),
+               _map("images/map.png")
 {
     _character.setPosition(_window.getWindowSize().x / 2, _window.getWindowSize().y / 2);
 
@@ -70,6 +74,7 @@ void Game::_moveCharacter()
 void Game::render()
 {
     _window.clear();
+    _map.render(_window.getRenderWindow());
     sf::Sprite sprite = _character.getSprite();
     _window.draw(sprite);
     _window.display();

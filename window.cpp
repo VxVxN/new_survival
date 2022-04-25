@@ -16,6 +16,7 @@ public:
     bool isDone();
     bool isFullscreen();
     sf::Vector2u getWindowSize();
+    sf::RenderWindow &getRenderWindow();
 
     void toggleFullscreen();
 
@@ -40,9 +41,9 @@ Window::Window()
     _setup("Window", sf::Vector2u(640, 480));
 }
 
-Window::Window(const std::string &l_title, const sf::Vector2u &l_size)
+Window::Window(const std::string &title, const sf::Vector2u &size)
 {
-    _setup(l_title, l_size);
+    _setup(title, size);
 }
 
 Window::~Window()
@@ -123,4 +124,9 @@ sf::Vector2u Window::getWindowSize()
 void Window::draw(sf::Drawable &drawable)
 {
     _window.draw(drawable);
+}
+
+sf::RenderWindow &Window::getRenderWindow()
+{
+    return _window;
 }
