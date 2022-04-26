@@ -18,6 +18,8 @@ public:
 
 private:
     void _moveCharacter();
+    void interactionWithMap();
+
     Window _window;
     Character _character;
     Map _map;
@@ -46,6 +48,7 @@ void Game::update()
 {
     _window.update();
     _moveCharacter();
+    interactionWithMap();
     _window.setView(_camera.view());
 }
 
@@ -101,4 +104,38 @@ void Game::restartClock()
 Window *Game::getWindow()
 {
     return &_window;
+}
+
+void Game::interactionWithMap()
+{
+    float x = _character.x();
+    float y = _character.y();
+    Direction direction = _character.direction();
+    float h = 32; // height of character
+    float w = 32; // width of character
+    for (int i = y / 32; i < (y + h) / 32; i++)
+        for (int j = x / 32; j < (x + w) / 32; j++)
+        {
+            if (tileMap[i][j] == '0')
+            {
+                switch (direction)
+                {
+                case Up:
+                    y = i * 32 + 32;
+                    break;
+                case Down:
+                    y = i * 32 - h;
+                    break;
+                case Left:
+                    x = j * 32 + 32;
+                    break;
+                case Right:
+                    x = j * 32 - w;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    _character.setPosition(x, y);
 }

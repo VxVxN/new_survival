@@ -20,9 +20,12 @@ public:
     void move(Direction direction, float time);
     float x();
     float y();
+    Direction direction();
 
 private:
     float _x, _y;
+    float _dy, _dx;
+    Direction _direction;
     const float _maxFrame = 2;
     const float _spriteSize = 32;
 
@@ -58,37 +61,39 @@ void Character::setPosition(float x, float y)
 
 void Character::move(Direction direction, float speed)
 {
-    float dy, dx;
     float positionFrame;
     switch (direction)
     {
     case Up:
-        dy = -speed;
+        _dy = -speed;
+        _dx = 0;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize * 3, _spriteSize, _spriteSize));
         break;
     case Down:
-        dy = speed;
+        _dy = speed;
+        _dx = 0;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, 0, _spriteSize, _spriteSize));
         break;
     case Left:
-        dx = -speed;
-        _sprite.move(dx, 0);
+        _dx = -speed;
+        _dy = 0;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize, _spriteSize, _spriteSize));
         break;
     case Right:
-        dx = speed;
+        _dx = speed;
+        _dy = 0;
         positionFrame = _updatePositionFrame();
         _sprite.setTextureRect(sf::IntRect(positionFrame, _spriteSize * 2, _spriteSize, _spriteSize));
         break;
     default:
         break;
     }
-
-    _x += dx;
-    _y += dy;
+    _direction = direction;
+    _x += _dx;
+    _y += _dy;
     _sprite.setPosition(_x, _y);
 }
 
@@ -111,4 +116,9 @@ float Character::x()
 float Character::y()
 {
     return _y;
+}
+
+Direction Character::direction()
+{
+    return _direction;
 }
