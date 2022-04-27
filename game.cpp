@@ -2,6 +2,7 @@
 #include "character.cpp"
 #include "map.cpp"
 #include "camera.cpp"
+#include "textbox.cpp"
 
 class Game
 {
@@ -11,6 +12,7 @@ public:
 
     void update();
     void render();
+    void handleInput();
     Window *getWindow();
 
     sf::Time getElapsed();
@@ -22,11 +24,15 @@ private:
 
     Window _window;
     Character _character;
+    Direction _characterDirection;
     Map _map;
     Camera _camera;
+    Textbox _textbox;
 
     sf::Clock _clock;
     sf::Time _elapsed;
+    sf::Time _globTime;
+    int _lastSecond;
     float _pixelsPerSecond;
 };
 
@@ -38,6 +44,7 @@ Game::Game() : _window("Survival", sf::Vector2u(1600, 1000)),
     _camera.setCenter(_character.x(), _character.y());
 
     _pixelsPerSecond = 400;
+    _lastSecond = 0;
 }
 
 Game::~Game()
@@ -47,6 +54,21 @@ Game::~Game()
 void Game::update()
 {
     _window.update();
+
+    float globTime = _globTime.asSeconds();
+
+    if (int(globTime) > _lastSecond) // update 1 time per a second
+    {
+        _lastSecond = int(globTime);
+        _character.update();
+    }
+
+    _textbox.clear();
+    _textbox.setup(5, 16, 150, sf::Vector2f(_character.x() - _camera.getSize().x / 2, _character.y() - _camera.getSize().y / 2));
+    _textbox.add("Health: " + std::to_string(_character.health()) + "%");
+    _textbox.add("Hunger: " + std::to_string(_character.hunger()) + "%");
+    _textbox.add("Cold: " + std::to_string(_character.cold()) + "%");
+
     _moveCharacter();
     interactionWithMap();
     _window.setView(_camera.view());
@@ -54,31 +76,19 @@ void Game::update()
 
 void Game::_moveCharacter()
 {
-    float speed = _elapsed.asSeconds() * _pixelsPerSecond;
+    if (!_character.isAlive())
+    {
+        _textbox.clear();
+        _textbox.setup(0, 25, 150, sf::Vector2f(_character.x() - 32, _character.y() - 32));
+        _textbox.add("Game over");
+        return;
+    }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    if (_characterDirection != None)
     {
-        _character.move(Left, speed);
+        float speed = _elapsed.asSeconds() * _pixelsPerSecond;
+        _character.move(_characterDirection, speed);
         _camera.setCenter(_character.x(), _character.y());
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-    {
-        _character.move(Right, speed);
-        _camera.setCenter(_character.x(), _character.y());
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-    {
-        _character.move(Up, speed);
-        _camera.setCenter(_character.x(), _character.y());
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-    {
-        _character.move(Down, speed);
-        _camera.setCenter(_character.x(), _character.y());
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-    {
-        _window.~Window();
     }
 }
 
@@ -88,6 +98,7 @@ void Game::render()
     _map.render(_window.getRenderWindow());
     sf::Sprite sprite = _character.getSprite();
     _window.draw(sprite);
+    _textbox.render(_window.getRenderWindow());
     _window.display();
 }
 
@@ -99,6 +110,7 @@ sf::Time Game::getElapsed()
 void Game::restartClock()
 {
     _elapsed = _clock.restart();
+    _globTime += _elapsed;
 }
 
 Window *Game::getWindow()
@@ -138,4 +150,33 @@ void Game::interactionWithMap()
             }
         }
     _character.setPosition(x, y);
+}
+
+void Game::handleInput()
+{
+    _characterDirection = None;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
+        _characterDirection = Left;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
+        _characterDirection = Right;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    {
+        _characterDirection = Up;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        _characterDirection = Down;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F11))
+    {
+        _window.toggleFullscreen();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+    {
+        _window.~Window();
+    }
 }

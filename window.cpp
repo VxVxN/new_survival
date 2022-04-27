@@ -82,11 +82,6 @@ void Window::update()
         {
             _isDone = true;
         }
-        else if (event.type == sf::Event::KeyPressed &&
-                 event.key.code == sf::Keyboard::F11)
-        {
-            toggleFullscreen();
-        }
     }
 }
 

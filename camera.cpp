@@ -7,6 +7,7 @@ public:
     ~Camera();
 
     void setCenter(float x, float y);
+    const sf::Vector2f &getSize();
     sf::View view();
 
 private:
@@ -29,4 +30,9 @@ void Camera::setCenter(float x, float y)
 sf::View Camera::view()
 {
     return _view;
+}
+
+const sf::Vector2f &Camera::getSize()
+{
+    return _view.getSize();
 }

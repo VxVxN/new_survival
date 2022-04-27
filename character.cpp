@@ -3,7 +3,8 @@
 
 enum Direction
 {
-    Up = 1,
+    None = 0,
+    Up,
     Down,
     Left,
     Right
@@ -21,6 +22,16 @@ public:
     float x();
     float y();
     Direction direction();
+    bool isAlive();
+    void update();
+
+    int health();
+    int hunger();
+    int cold();
+
+    void addHealth(int number);
+    void addHunger(int number);
+    void addCold(int number);
 
 private:
     float _x, _y;
@@ -28,6 +39,10 @@ private:
     Direction _direction;
     const float _maxFrame = 2;
     const float _spriteSize = 32;
+
+    int _health;
+    int _hunger;
+    int _cold;
 
     sf::Sprite _sprite;
     sf::Texture _texture;
@@ -45,6 +60,10 @@ Character::Character(std::string filename)
 
     _sprite.setTexture(_texture);
     _sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+
+    _health = 100;
+    _hunger = 100;
+    _cold = 100;
 }
 
 sf::Sprite Character::getSprite()
@@ -121,4 +140,59 @@ float Character::y()
 Direction Character::direction()
 {
     return _direction;
+}
+
+bool Character::isAlive()
+{
+    if (_health <= 0)
+    {
+        return false;
+    }
+    return true;
+}
+
+int Character::health()
+{
+    return _health;
+}
+
+int Character::hunger()
+{
+    return _hunger;
+}
+
+int Character::cold()
+{
+    return _cold;
+}
+
+void Character::addHealth(int number)
+{
+    _health += number;
+}
+
+void Character::addHunger(int number)
+{
+    _hunger += number;
+}
+
+void Character::addCold(int number)
+{
+    _cold += number;
+}
+
+void Character::update()
+{
+    if (!isAlive())
+    {
+        return;
+    }
+    if (hunger() > 0)
+    {
+        addHunger(-10);
+    }
+    else
+    {
+        addHealth(-10);
+    }
 }
